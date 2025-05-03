@@ -12,33 +12,32 @@ And therein lies the fundamental truth of cybersecurity, which is often overlook
 ***
 ### Fail2Ban Winbox (Защита MikroTik Winbox от Brute Force)
 Защита MikroTik от перебора пароля (BruteForce) при подключении через Winbox (IP адрес), используя MikroTik Firewall. При каждой неверной попытке ввода пароля через Winbox, MikroTik отправляет в ответ незашифрованный текст «invalid user name or password».
+<pre>
 Информация:
 Chain: output
 Protocol: 6 (tcp)
 Src. Port: 8291
 Content: invalid user name or password
+    </pre>
 Eng:
 Fail2Ban Winbox (protecting MikroTik Winbox from brute force)
 Download MikroTik from password brute force when connecting via Winbox (IP address) using the MikroTik Firewall. Every time a new attempt is entered using Winbox, MikroTik responds to the unregistered text "invalid username or password".
+<pre>
 Information:
 Chain: output
 Protocol: 6 (tcp)
 Src. Port: 8291
 Content: invalid username or password.
+    </pre>
+<pre>
 /ip firewall filter add action=jump chain=output comment="F2B Winbox: Jump to Fail2Ban-Destination-IP chain" content="invalid user name or password" jump-target=Fail2Ban-Destination-IP protocol=tcp src-port=8291
-<br>
 /ip firewall filter add action=add-dst-to-address-list address-list=BlackList address-list-timeout=60m chain=Fail2Ban-Destination-IP comment="3 Attempt --> BruteForceList" dst-address-list=LoginFailure02
-<br>
 /ip firewall filter add action=add-dst-to-address-list address-list=LoginFailure02 address-list-timeout=2m chain=Fail2Ban-Destination-IP comment="2 Attempt --> LoginFailure02" dst-address-list=LoginFailure01
-<br>
 /ip firewall filter add action=add-dst-to-address-list address-list=LoginFailure01 address-list-timeout=1m chain=Fail2Ban-Destination-IP comment="1 Attempt --> LoginFailure01"
-<br>
+</pre>
 **Add block RAW rules:**
+<pre>
 /ip firewall raw
-<br>
 add action=drop chain=prerouting comment=";; Block Blacklist" \``
     ``src-address-list=BruteForceList
-    <br>
-
-
-
+</pre>
